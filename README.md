@@ -1,7 +1,43 @@
-This is my little personal information into things I have done to resolve problems with WSL2
+setting up WSL2
 
-for errors with display :0 this is the fix i used
-download /WSL2/wslg.conf and place it in /etc/tmpfiles.d/
-after that return to PowerShell or command prompt and use the “wsl –shutdown” command then relaunch the WSL distro and you should have the display working again.
+make sure Systemd is working
 
-also have added my compile of WSL2 Kernal 6.6 from Mircrosoft https://github.com/microsoft/WSL2-Linux-Kernel
+sudo nano /etc/wsl.conf
+add this to the top of the file
+
+[boot]
+systemd=true
+
+save and exit
+
+to prevent problems with WSLg
+
+sudo nano /etc/tmpfiles.d/wslg.conf
+add this to the fiels contents
+
+#  This file is part of the debianisation of systemd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+
+# See tmpfiles.d(5) for details
+
+# Type Path           Mode UID  GID  Age Argument
+L+     /tmp/.X11-unix -    -    -    -   /mnt/wslg/.X11-unix
+
+save and exit
+
+to prevent windows programs not working with WSLInterop
+
+sudo nano /usr/lib/binfmt.d/WSLInterop.conf
+add this to the file contents
+
+:WSLInterop:M::MZ::/init:PF
+
+save and exit
+
+make sure to use the wsl --shutdown command and restart the distro after the files are edited
+
+I will have intructions con compiling the windows linux 6.6 kernal once i figure out how to make it work with kvm after compile
